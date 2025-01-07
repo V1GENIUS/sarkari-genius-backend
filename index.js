@@ -1,18 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');  // Import CORS
+const cors = require('cors'); 
 const bodyParser = require('body-parser');
 const jobRoutes = require('./routers/jobRoutes');
-const { errorHandler } = require('./MIDDLEWARE/errorMiddleware');
 const visitorRoutes = require('./routers/visitorsRoute');
-const jobLinkRoutes = require('./routers/JobLinkRoute'); 
 const connectDB = require('./Database/connectDB');
+const userRoutes = require("./routers/userRoutes");
 
 const app = express();
 
 // Use CORS middleware
 app.use(cors({
-  origin: 'http://localhost:3000', // Allow only your React app to access the backend
+  origin: 'http://localhost:3000', 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'], 
 }));
 
@@ -20,17 +19,18 @@ app.use(cors({
 
 app.use(express.json());
 const port = process.env.PORT || 7000;
-// Connect to MongoDB
 connectDB();
-//require('./Database/connectDB');
 
-// Your routes
+
+// routes
 app.use('/api', visitorRoutes);
-// app.use('/api', jobLinkRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/user", userRoutes);
 
 
-app.use(errorHandler);
+
+app.use(express.json());
+
 
 app.listen(port, () => {
   console.log(`Server is running at port ${port}`);
