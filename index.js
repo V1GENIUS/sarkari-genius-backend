@@ -29,7 +29,6 @@ app.use("/api/user", userRoutes);
 
 
 
-app.use(express.json());
 
 
 app.listen(port, () => {
