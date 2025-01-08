@@ -28,7 +28,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/user", userRoutes);
 
 
-const port = process.env.PORT ;
+const port = process.env.PORT ||7000 ;
 
 if (!port) {
   throw new Error("PORT is not defined in the environment variables.");
