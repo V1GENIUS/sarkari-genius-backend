@@ -13,7 +13,7 @@ const port = process.env.PORT ||7000 ;
 
 // Use CORS middleware
 app.use(cors({
-  origin: 'https://sarkarigenius.vercel.app',
+  origin: 'https://sarkarigenius.vercel.app/',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
 }));
 
