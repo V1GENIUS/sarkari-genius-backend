@@ -15,7 +15,6 @@ const port = process.env.PORT ||7000 ;
 app.use(cors({
 
   // origin: 'http://localhost:3000',
-  
    origin: 'https://sarkarigenius.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
 }));
