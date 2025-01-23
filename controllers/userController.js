@@ -23,7 +23,7 @@ exports.register = async (req, res) => {
       email,
       username,
       password: hashedPassword,
-      role: role || "user", // Default to "user" if no role is provided
+      role: role || "user",
     });
 
     res.status(201).json({ message: "User registered successfully", user });
@@ -99,6 +99,41 @@ exports.adminOnly = (req, res, next) => {
   }
   next();
 };
+
+exports.googleLogin = async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    // Check if the user already exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      // If user doesn't exist, create a new one
+      user = await User.create({
+        name,
+        email,
+        username: email.split("@")[0],
+        password: "", // Leave empty since it's a Google login
+        role: "user", // Default role
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.status(200).json({
+      message: "Google login successful",
+      token,
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 // Logout (invalidate the token by adding it to the blacklist)
 exports.logout = (req, res) => {

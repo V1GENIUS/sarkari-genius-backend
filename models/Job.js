@@ -43,7 +43,6 @@ const jobSchema = mongoose.Schema({
   Qualification:QualificationSchema,
   jobLocation:jobLocationSchema,
   documentDetails:{ type: String, } , 
-  applyLink: { type: String,  },
   officialPdfLink: { type: String,  },
   websiteLink: { type: String,  }
 }, {

@@ -3,7 +3,7 @@ const Job = require('../models/Job');
 // Create a new job
 const createJob = async (req, res) => {
   try {
-    const { postName, organization,vacancy, salary,importantDates,fees, ageLimit, selectionProcess,Qualification,jobLocation ,documentDetails,applyLink,officialPdfLink,websiteLink} = req.body;
+    const { postName, organization,vacancy, salary,importantDates,fees, ageLimit, selectionProcess,Qualification,jobLocation ,documentDetails,officialPdfLink,websiteLink} = req.body;
 
     const job = new Job({
       postName,
@@ -17,7 +17,7 @@ const createJob = async (req, res) => {
       Qualification,
       jobLocation,
       documentDetails,
-      applyLink,
+      
       officialPdfLink,
       websiteLink
     });
