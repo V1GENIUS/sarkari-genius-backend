@@ -1,11 +1,11 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors'); 
-const bodyParser = require('body-parser');
 const jobRoutes = require('./routers/jobRoutes');
+const cardRoutes = require('./routers/cardRoutes');
 const visitorRoutes = require('./routers/visitorsRoute');
 const connectDB = require('./Database/connectDB');
 const userRoutes = require("./routers/userRoutes");
+const analyticsRoutes = require('./routers/analyticsRoutes')
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT ||7000 ;
@@ -14,8 +14,8 @@ const port = process.env.PORT ||7000 ;
 // Use CORS middleware
 app.use(cors({
 
-  // origin: 'http://localhost:3000',
-   origin: 'https://sarkarigenius.vercel.app',
+  origin: 'http://localhost:3000',
+  //  origin: 'https://sarkarigenius.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
 }));
 
@@ -28,7 +28,9 @@ connectDB();
 // routes
 app.use('/api', visitorRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/cards", cardRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 
 

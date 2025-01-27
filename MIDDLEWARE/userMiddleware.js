@@ -8,7 +8,7 @@ exports.protect = (req, res, next) => {
       return res.status(401).json({ message: "No token provided, authorization denied" });
     }
 
-    const decoded = jwt.verify(token, "Ektuhinirankar123"); 
+    const decoded = jwt.verify(token, "Ektuhinirankar123");
     req.user = decoded; 
     next();
   } catch (error) {
