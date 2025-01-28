@@ -45,3 +45,20 @@ exports.logout = (req, res) => {
   blacklist.add(token); // Add the token to the blacklist
   res.status(200).json({ message: "Logout successful" });
 };
+
+exports.cacheMiddleware = (req, res, next) => {
+  const key = req.originalUrl; // Use the request URL as the cache key
+
+  redisClient.get(key, (err, data) => {
+    if (err) {
+      console.error(err);
+      return next(); // Proceed if an error occurs
+    }
+    if (data) {
+      // Cache hit, return the cached data
+      return res.json(JSON.parse(data));
+    }
+    // Cache miss, proceed to the next middleware
+    next();
+  });
+};
