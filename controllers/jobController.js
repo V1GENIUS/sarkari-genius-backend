@@ -17,7 +17,6 @@ const createJob = async (req, res) => {
       Qualification,
       jobLocation,
       documentDetails,
-      
       officialPdfLink,
       websiteLink
     });

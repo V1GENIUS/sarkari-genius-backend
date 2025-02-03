@@ -23,7 +23,8 @@ const logAnalytics = async (req, res) => {
 // Get analytics data
 const getAnalytics = async (req, res) => {
   try {
-    const analyticsData = await Analytics.find().sort({ visitedAt: -1 }); // Sorted by latest visits
+    const analyticsData = await Analytics.find().sort({ visitedAt: -1 }); 
+    
     res.status(200).json(analyticsData);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch analytics data", error });

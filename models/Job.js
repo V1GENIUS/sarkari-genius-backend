@@ -17,7 +17,7 @@ const QualificationSchema = mongoose.Schema({
   Note:{ type: String,  }
 });
 
-// Sub-schema for important dates
+
 const importantDateSchema = mongoose.Schema({
   notificationDate: { type: String,  },
   startDate: { type: String,},
@@ -31,6 +31,8 @@ const jobLocationSchema = mongoose.Schema({
 })
 
 
+
+
 const jobSchema = mongoose.Schema({
   postName: { type: String, },
   organization: { type: String,  },
@@ -42,7 +44,7 @@ const jobSchema = mongoose.Schema({
   selectionProcess:{ type: String, },
   Qualification:QualificationSchema,
   jobLocation:jobLocationSchema,
-  documentDetails:{ type: String, } , 
+  documentDetails: [{ type: String }],
   officialPdfLink: { type: String,  },
   websiteLink: { type: String,  }
 }, {
