@@ -31,8 +31,6 @@ const jobLocationSchema = mongoose.Schema({
 })
 
 
-
-
 const jobSchema = mongoose.Schema({
   postName: { type: String, },
   organization: { type: String,  },
@@ -42,7 +40,7 @@ const jobSchema = mongoose.Schema({
   fees: [feeSchema],
   ageLimit: ageLimitSchema,
   selectionProcess:{ type: String, },
-  Qualification:QualificationSchema,
+  Qualification:[{ type: String,  }],
   jobLocation:jobLocationSchema,
   documentDetails: [{ type: String }],
   officialPdfLink: { type: String,  },
