@@ -5,7 +5,6 @@ const cardRoutes = require('./routers/cardRoutes');
 const visitorRoutes = require('./routers/visitorsRoute');
 const connectDB = require('./Database/connectDB');
 const userRoutes = require("./routers/userRoutes");
-const analyticsRoutes = require('./routers/analyticsRoutes')
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT ||7000 ;
@@ -30,7 +29,7 @@ app.use('/api', visitorRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/cards", cardRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/analytics", analyticsRoutes);
+
 
 
 

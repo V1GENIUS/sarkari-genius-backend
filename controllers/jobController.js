@@ -1,4 +1,5 @@
 const Job = require('../models/Job');
+// const client = require('../config/redis');
 
 // Create a new job
 const createJob = async (req, res) => {
@@ -45,6 +46,8 @@ const getJobById = async (req, res) => {
     res.status(500).json({ message: 'Error fetching job', error: error.message });
   }
 };
+
+
 
 // Get all jobs
 const getAllJobs = async (req, res) => {
