@@ -15,6 +15,8 @@ app.use(cors({
 
   // origin: 'http://localhost:3000',
    origin: 'https://sarkarigenius.vercel.app',
+ 
+  //  origin: 'https://zany-space-rotary-phone-495jqx5vwqv2jj7q-3000.app.github.dev',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
 }));
 
