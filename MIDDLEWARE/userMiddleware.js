@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 // Protect route by validating JWT
-exports.protect = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
@@ -17,7 +17,7 @@ exports.protect = (req, res, next) => {
 };
 
 // Admin-only route guard
-exports.adminOnly = (req, res, next) => {
+const adminOnly = (req, res, next) => {
   if (req.user.role !== "admin") {
     return res.status(403).json({ message: "Access denied: Admins only" });
   }
@@ -62,3 +62,6 @@ exports.cacheMiddleware = (req, res, next) => {
     next();
   });
 };
+
+
+module.exports ={authMiddleware , adminOnly}

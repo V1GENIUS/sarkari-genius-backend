@@ -1,4 +1,4 @@
-const Job = require('../models/Job');
+
 const PrivateJobs = require('../models/PrivateJobs');
 // const client = require('../config/redis');
 
@@ -19,8 +19,8 @@ const createPrivateJob = async (req, res) => {
       
     });
 
-    const savedJob = await PrivateJobs.save();
-    res.status(201).json(savedJob);
+    const savedJob = await job.save();
+    res.status(201).json({ massage: "succefully added data" ,savedJob});
   } catch (error) {
     res.status(500).json({ message: 'Error creating job', error: error.message });
   }
@@ -38,7 +38,7 @@ const getPrivateJobById = async (req, res) => {
       return res.status(404).json({ message: 'Job not found' });
     }
 
-    res.status(200).json(job);
+    res.status(200).json({massage : "successfully get data by id" , job});
   } catch (error) {
     res.status(500).json({ message: 'Error fetching job', error: error.message });
   }
@@ -47,12 +47,27 @@ const getPrivateJobById = async (req, res) => {
 
 
 // Get all jobs
+// const getAllPrivateJobs = async (req, res) => {
+//   try {
+//     const jobs = await PrivateJobs.find();
+//     res.status(200).json({massage:"Successfully all data are getted", jobs});
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error fetching jobs', error: error.message });
+//   }
+// };
+
+
 const getAllPrivateJobs = async (req, res) => {
   try {
     const jobs = await PrivateJobs.find();
+
+    if (!Array.isArray(jobs)) {
+      return res.status(500).json({ message: 'Invalid data format received' });
+    }
+
     res.status(200).json(jobs);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching jobs', error: error.message });
+    res.status(500).json({ message: 'Errors fetching jobs', error: error.message });
   }
 };
 

@@ -1,23 +1,35 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const key = "Ektuhinirankar123"
 
-// Register a new user (default role: "user")
+require('dotenv').config();
+
+
 
 exports.register = async (req, res) => {
   try {
     const { name, email, username, password, role } = req.body;
 
+    if (!name || !email || !username || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    
     
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Hash the password
+   
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+    
     const hashedPassword = await bcrypt.hash(password, 10);
+    
 
-    // Create a new user
+
     const user = await User.create({
       name,
       email,
@@ -26,7 +38,14 @@ exports.register = async (req, res) => {
       role: role || "user",
     });
 
-    res.status(201).json({ message: "User registered successfully", user });
+  
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      key, 
+      { expiresIn: "1h" }
+    );
+
+    res.status(201).json({ message: "User registered successfully",token, user, });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -37,22 +56,27 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if ( !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    
+
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not exist please signup" });
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Wrong password" });
     }
 
-    // Generate JWT token
+  
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      "Ektuhinirankar123", 
+      key , 
       { expiresIn: "1h" }
     );
 
@@ -62,7 +86,7 @@ exports.login = async (req, res) => {
       user: { id: user._id, name: user.name, username: user.username, email: user.email, role: user.role },
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message , massage:"erorr 505"});
   }
 };
 
@@ -104,23 +128,23 @@ exports.googleLogin = async (req, res) => {
   try {
     const { email, name } = req.body;
 
-    // Check if the user already exists
+   
     let user = await User.findOne({ email });
     if (!user) {
-      // If user doesn't exist, create a new one
+    
       user = await User.create({
         name,
         email,
         username: email.split("@")[0],
-        password: "", // Leave empty since it's a Google login
-        role: "user", // Default role
+        password: "", 
+        role: "user", 
       });
     }
 
-    // Generate JWT token
+   
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      JWT_SECRET,
+      key,
       { expiresIn: "1h" }
     );
 
@@ -136,14 +160,30 @@ exports.googleLogin = async (req, res) => {
 
 
 // Logout (invalidate the token by adding it to the blacklist)
+// exports.logout = (req, res) => {
+//   const token = req.header("Authorization")?.split(" ")[1];
+//   if (!token) {
+//     return res.status(400).json({ message: "No token provided" });
+//   }
+
+//   // Add the token to the blacklist
+//   blacklist.add(token);
+
+//   res.status(200).json({ message: "Logout successful" });
+// };
+
+
 exports.logout = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1];
   if (!token) {
     return res.status(400).json({ message: "No token provided" });
   }
 
-  // Add the token to the blacklist
-  blacklist.add(token);
-
-  res.status(200).json({ message: "Logout successful" });
+  try {
+    jwt.verify(token, key); // optional, to confirm it's valid
+    blacklist.add(token);
+    res.status(200).json({ message: "Logout successful" });
+  } catch (err) {
+    return res.status(400).json({ message: "Invalid token" });
+  }
 };

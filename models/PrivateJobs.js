@@ -9,7 +9,7 @@ const PrivatejobSchema = mongoose.Schema({
   batch: { type: String, },
   Qualification:{ type: String,  },
   location:{ type: String,  },
-  applyLink: { type: String,  }
+  applyLink: { type: String, }
 }, {
   timestamps: true,
 });
