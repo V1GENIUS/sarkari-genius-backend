@@ -16,7 +16,7 @@ app.use(cors({
   // origin: 'http://localhost:3000',
    origin: 'https://sarkarigenius.vercel.app',
   //  origin: "http://127.0.0.1:7000/",
-  //  origin : 'http://127.0.0.1:3005',
+  //  origin : 'http://127.0.0.1:300',
  
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   credentials: true
