@@ -1,5 +1,5 @@
 const express = require('express');
-const { createJob, getAllJobs, deleteJob,updateJob ,getJobById} = require('../controllers/jobController');
+const { createJob, getAllJobs, deleteJob,updateJob ,getJobById, submitGovtRequestForm ,getAllGovtRequest} = require('../controllers/jobController');
 const { createPrivateJob, getAllPrivateJobs, deletePrivateJob,updatePrivateJob ,getPrivateJobById} = require('../controllers/PrivateJobController');
 // const authMiddleware = require('../MIDDLEWARE/userMiddleware');
 const router = express.Router();
@@ -18,11 +18,16 @@ router.get('/pri/:id', getPrivateJobById);
 
 //govt jobs routes
 router.post('/create', createJob);
+router.post('/govt-request', submitGovtRequestForm);
 router.delete('/:id', deleteJob);
 router.put('/jobs/:id', updateJob);
 
+router.get('/request', getAllGovtRequest);
 router.get('/:id',  getJobById);
 router.get('/', getAllJobs);
+
+
+
 
 
 

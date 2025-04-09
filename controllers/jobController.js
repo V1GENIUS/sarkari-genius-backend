@@ -1,4 +1,5 @@
 const Job = require('../models/Job');
+const GovtRequestForm = require('../models/GovtRequestForm');
 // const client = require('../config/redis');
 
 // Create a new job
@@ -82,7 +83,6 @@ const updateJob = async (req, res) => {
 };
 
 
-
 const deleteJob = async (req, res) => {
   try {
     const jobId = req.params.id;
@@ -99,4 +99,49 @@ const deleteJob = async (req, res) => {
   }
 };
 
-module.exports = { createJob, getAllJobs, deleteJob ,updateJob ,getJobById};
+const submitGovtRequestForm = async (req, res) => {
+  const { name, email, mobile, whatsapp, address, jobDetails, agree } = req.body;
+
+  if (!name || !email || !mobile || !whatsapp || !address || !jobDetails) {
+    return res.status(400).json({ message: 'Please fill all required fields.' });
+  }
+
+  try {
+    const newRequest = new GovtRequestForm({
+      name,
+      email,
+      mobile,
+      whatsapp,
+      address,
+      jobDetails,
+      agree: agree || false
+    });
+
+    const savedRequest = await newRequest.save();
+    res.status(201).json({ message: 'Form submitted successfully.', data: savedRequest });
+  } catch (error) {
+    console.error('Govt request form submission error:', error.message);
+    res.status(500).json({ message: 'Something went wrong. Please try again.' });
+  }
+};
+
+
+const getAllGovtRequest = async (req, res) => {
+  try {
+    const requests = await GovtRequestForm.find();
+    res.status(200).json({
+      message: 'All data is here',
+      requests,
+    });
+  } catch (err) {
+    console.error("Error fetching Govt Requests:", err.message);
+    res.status(500).json({
+      message: 'Error fetching requests',
+      error: err.message,
+    });
+  }
+};
+
+
+
+module.exports = { createJob, getAllJobs, deleteJob ,updateJob ,getJobById ,submitGovtRequestForm ,getAllGovtRequest};
