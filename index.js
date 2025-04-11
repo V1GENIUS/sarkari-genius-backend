@@ -33,6 +33,10 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/cards", cardRoutes);
 app.use("/api/user", userRoutes);
 
+app.get('/api/ping', (req, res) => {
+  res.send('pong');
+});
+
 
 
 
