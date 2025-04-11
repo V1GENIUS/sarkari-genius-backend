@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login ,logout  } = require("../controllers/userController");
+const { register, login ,logout ,googleLogin  } = require("../controllers/userController");
 const { authMiddleware, adminOnly } = require("../MIDDLEWARE/userMiddleware");
 
 const router = express.Router();
@@ -7,6 +7,7 @@ const router = express.Router();
 // Auth routes
 router.post("/register", register);
 router.post("/login", login);  
+router.post("/google-login", googleLogin); 
 router.post("/logout", authMiddleware, logout);  
 
 // Admin-only route example

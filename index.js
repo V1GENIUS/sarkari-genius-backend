@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors'); 
 const jobRoutes = require('./routers/jobRoutes');
 const cardRoutes = require('./routers/cardRoutes');
-const visitorRoutes = require('./routers/visitorsRoute');
 const connectDB = require('./Database/connectDB');
 const userRoutes = require("./routers/userRoutes");
 require('dotenv').config();
@@ -16,7 +15,7 @@ app.use(cors({
   // origin: 'http://localhost:3000',
    origin: 'https://sarkarigenius.vercel.app',
   //  origin: "http://127.0.0.1:7000/",
-  //  origin : 'http://127.0.0.1:300',
+  //  origin : 'http://127.0.0.1:3005',
  
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   credentials: true
@@ -29,7 +28,7 @@ connectDB();
 
 
 // routes
-app.use('/api', visitorRoutes);
+
 app.use("/api/jobs", jobRoutes);
 app.use("/api/cards", cardRoutes);
 app.use("/api/user", userRoutes);

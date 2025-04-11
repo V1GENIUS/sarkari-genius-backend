@@ -2,8 +2,9 @@ const User = require("../models/userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const key = "Ektuhinirankar123"
-
 require('dotenv').config();
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client("178127019337-sh9cjlturc5ma4b5p0focjm9j4dr2qr1.apps.googleusercontent.com");
 
 
 
@@ -123,25 +124,28 @@ exports.adminOnly = (req, res, next) => {
   }
   next();
 };
-
 exports.googleLogin = async (req, res) => {
   try {
-    const { email, name } = req.body;
+    const { tokenId } = req.body;
 
-   
+    const ticket = await client.verifyIdToken({
+      idToken: tokenId,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { email, name } = ticket.getPayload();
+
     let user = await User.findOne({ email });
     if (!user) {
-    
       user = await User.create({
         name,
         email,
         username: email.split("@")[0],
         password: "", 
-        role: "user", 
+        role: "user",
       });
     }
 
-   
     const token = jwt.sign(
       { id: user._id, role: user.role },
       key,
@@ -151,7 +155,12 @@ exports.googleLogin = async (req, res) => {
     res.status(200).json({
       message: "Google login successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
