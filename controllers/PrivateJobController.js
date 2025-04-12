@@ -1,4 +1,4 @@
-
+const axios = require('axios');
 const PrivateJobs = require('../models/PrivateJobs');
 // const client = require('../config/redis');
 
@@ -17,6 +17,31 @@ const createPrivateJob = async (req, res) => {
       location,
       applyLink,
       
+    });
+
+    // ✅ Send to Telegram
+    const botToken = '7844542301:AAFYj_pDsVUmyc63gnl4Uk5dlaCPfJrJ5Nc';
+    const chatId = '@sarkarigeniusfresher';
+    const message = `
+    👨‍💻 *${organization}* is Hiring now
+
+    -------------------------
+
+    🧑‍💼 Role: ${JobDegination}\n
+    📍 Location :${location}\n
+    🏢 Batch : ${batch}\n
+    🎓 Qualification : ${Qualification}\n
+    💸 Salary Upto : ${salary}\n
+    🔗 [Apply Now] : (${applyLink}
+    --------------------------
+
+    *Join Now* : @sarkarigeniusfresher
+    `;
+
+    await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      chat_id: chatId,
+      text: message,
+      parse_mode: 'Markdown'
     });
 
     const savedJob = await job.save();
@@ -45,16 +70,6 @@ const getPrivateJobById = async (req, res) => {
 };
 
 
-
-// Get all jobs
-// const getAllPrivateJobs = async (req, res) => {
-//   try {
-//     const jobs = await PrivateJobs.find();
-//     res.status(200).json({massage:"Successfully all data are getted", jobs});
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error fetching jobs', error: error.message });
-//   }
-// };
 
 
 const getAllPrivateJobs = async (req, res) => {
