@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const rateLimit = require("express-rate-limit");
 
 // Protect route by validating JWT
 const authMiddleware = (req, res, next) => {
@@ -26,14 +27,6 @@ const adminOnly = (req, res, next) => {
 
 const blacklist = new Set();
 
-// Middleware to check if the token is blacklisted
-const isBlacklisted = (req, res, next) => {
-  const token = req.header("Authorization")?.split(" ")[1];
-  if (blacklist.has(token)) {
-    return res.status(401).json({ message: "Token is invalidated" });
-  }
-  next();
-};
 
 // Logout (invalidate the token by adding it to the blacklist)
 exports.logout = (req, res) => {
@@ -64,4 +57,12 @@ exports.cacheMiddleware = (req, res, next) => {
 };
 
 
-module.exports ={authMiddleware , adminOnly}
+
+const forgotPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 5,
+  message: "Too many password reset attempts. Please try again later."
+});
+
+
+module.exports ={authMiddleware , adminOnly ,forgotPasswordLimiter}

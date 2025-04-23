@@ -5,7 +5,7 @@ const GovtRequestForm = require('../models/GovtRequestForm');
 // Create a new job
 const createJob = async (req, res) => {
   try {
-    const { postName, organization,vacancy, salary,importantDates,fees, ageLimit, selectionProcess,Qualification,jobLocation ,documentDetails,officialPdfLink,websiteLink} = req.body;
+    const { postName, organization,vacancy, salary,importantDates,fees, ageLimit, selectionProcess,Qualification,jobLocation ,documentDetails,officialPdfLink,websiteLink,admitcard} = req.body;
 
     const job = new Job({
       postName,
@@ -20,7 +20,8 @@ const createJob = async (req, res) => {
       jobLocation,
       documentDetails,
       officialPdfLink,
-      websiteLink
+      websiteLink,
+      admitcard : "Soon"
     });
 
     const savedJob = await job.save();
@@ -47,9 +48,6 @@ const getJobById = async (req, res) => {
     res.status(500).json({ message: 'Error fetching job', error: error.message });
   }
 };
-
-
-
 // Get all jobs
 const getAllJobs = async (req, res) => {
   try {
@@ -81,8 +79,6 @@ const updateJob = async (req, res) => {
     res.status(500).json({ message: 'Error updating job', error: error.message });
   }
 };
-
-
 const deleteJob = async (req, res) => {
   try {
     const jobId = req.params.id;
@@ -99,6 +95,8 @@ const deleteJob = async (req, res) => {
   }
 };
 
+
+// user Resquests API
 const submitGovtRequestForm = async (req, res) => {
   const { name, email, mobile, whatsapp, address, jobDetails, agree } = req.body;
 
@@ -120,12 +118,9 @@ const submitGovtRequestForm = async (req, res) => {
     const savedRequest = await newRequest.save();
     res.status(201).json({ message: 'Form submitted successfully.', data: savedRequest });
   } catch (error) {
-    console.error('Govt request form submission error:', error.message);
     res.status(500).json({ message: 'Something went wrong. Please try again.' });
   }
 };
-
-
 const getAllGovtRequest = async (req, res) => {
   try {
     const requests = await GovtRequestForm.find();
@@ -134,7 +129,6 @@ const getAllGovtRequest = async (req, res) => {
       requests,
     });
   } catch (err) {
-    console.error("Error fetching Govt Requests:", err.message);
     res.status(500).json({
       message: 'Error fetching requests',
       error: err.message,

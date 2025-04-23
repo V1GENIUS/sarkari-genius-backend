@@ -44,7 +44,8 @@ const jobSchema = mongoose.Schema({
   jobLocation:jobLocationSchema,
   documentDetails: [{ type: String }],
   officialPdfLink: { type: String,  },
-  websiteLink: { type: String,  }
+  websiteLink: { type: String,  },
+  admitcard:{type : String ,default: "Soon"}
 }, {
   timestamps: true,
 });

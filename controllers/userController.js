@@ -5,6 +5,13 @@ const key = "Ektuhinirankar123"
 require('dotenv').config();
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client("178127019337-sh9cjlturc5ma4b5p0focjm9j4dr2qr1.apps.googleusercontent.com");
+const crypto = require('crypto');
+const  BASEURL = require('../config/URl')
+const nodemailer = require('nodemailer');
+const SMTP_USER="sarkari.genius@gmail.com"
+const SMTP_PASS="gxkx xbtj hneg uobx"
+
+
 
 
 
@@ -91,7 +98,6 @@ exports.login = async (req, res) => {
   }
 };
 
-
 // Token blacklist set (to invalidate logged-out tokens)
 const blacklist = new Set();
 
@@ -167,21 +173,6 @@ exports.googleLogin = async (req, res) => {
   }
 };
 
-
-// Logout (invalidate the token by adding it to the blacklist)
-// exports.logout = (req, res) => {
-//   const token = req.header("Authorization")?.split(" ")[1];
-//   if (!token) {
-//     return res.status(400).json({ message: "No token provided" });
-//   }
-
-//   // Add the token to the blacklist
-//   blacklist.add(token);
-
-//   res.status(200).json({ message: "Logout successful" });
-// };
-
-
 exports.logout = (req, res) => {
   const token = req.header("Authorization")?.split(" ")[1];
   if (!token) {
@@ -196,3 +187,91 @@ exports.logout = (req, res) => {
     return res.status(400).json({ message: "Invalid token" });
   }
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
+
+    user.resetToken = resetToken;
+    user.resetTokenExpire = resetTokenExpire;
+    await user.save();
+
+    const resetUrl = `${BASEURL.BASEURL}/reset-password/${resetToken}`;
+
+    // Setup Nodemailer
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: SMTP_USER,
+      to: user.email,
+      subject: 'Password Reset Request',
+      html: `
+        <h3>Password Reset</h3>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p>This link will expire in 15 minutes.</p>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Password reset link sent to your email." });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to send reset link" });
+  }
+};
+
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ message: "Token and new password are required" });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters." });
+    }
+    
+
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired reset token" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    user.password = hashedPassword;
+    user.resetToken = undefined;
+    user.resetTokenExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password has been reset successfully" });
+
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong while resetting password" });
+  }
+};
+

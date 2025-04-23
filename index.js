@@ -1,21 +1,15 @@
-const express = require('express');
-const cors = require('cors'); 
-const jobRoutes = require('./routers/jobRoutes');
-const cardRoutes = require('./routers/cardRoutes');
-const connectDB = require('./Database/connectDB');
-const userRoutes = require("./routers/userRoutes");
+
+const {jobRoutes ,cardRoutes ,connectDB ,userRoutes  ,express ,cors ,BASEURL } = require('./import')
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT ||7000 ;
 
 
+
 // Use CORS middlewa
 app.use(cors({
 
-  // origin: 'http://localhost:3000',
-   origin: 'https://sarkarigenius.vercel.app',
-  //  origin: "http://127.0.0.1:7000/",
-  //  origin : 'http://127.0.0.1:3005',
+   origin : BASEURL,
  
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
   credentials: true

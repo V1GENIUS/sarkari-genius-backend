@@ -33,7 +33,6 @@ const getCardById = async (req, res) => {
   }
 };
 
-
 // Get all jobs
 const getAllCard = async (req, res) => {
   try {
@@ -65,8 +64,6 @@ const updateCard = async (req, res) => {
     res.status(500).json({ message: 'Error updating card', error: error.message });
   }
 };
-
-
 
 const deleteCard = async (req, res) => {
   try {

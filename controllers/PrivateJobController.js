@@ -69,9 +69,6 @@ const getPrivateJobById = async (req, res) => {
   }
 };
 
-
-
-
 const getAllPrivateJobs = async (req, res) => {
   try {
     const jobs = await PrivateJobs.find();
@@ -107,8 +104,6 @@ const updatePrivateJob = async (req, res) => {
     res.status(500).json({ message: 'Error updating job', error: error.message });
   }
 };
-
-
 
 const deletePrivateJob = async (req, res) => {
   try {
