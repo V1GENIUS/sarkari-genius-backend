@@ -1,5 +1,5 @@
 const express = require("express");
-const { register, login ,logout ,googleLogin ,forgotPassword, resetPassword  } = require("../controllers/userController");
+const { register, login ,logout ,googleLogin ,forgotPassword, resetPassword ,  getUserProfile  } = require("../controllers/userController");
 const { authMiddleware, adminOnly ,forgotPasswordLimiter } = require("../MIDDLEWARE/userMiddleware");
 
 const router = express.Router();
@@ -11,6 +11,8 @@ router.post("/google-login", googleLogin);
 router.post("/logout", authMiddleware, logout);  
 router.post('/forgot-password',forgotPasswordLimiter, forgotPassword);
 router.post('/reset-password/:token', resetPassword);
+router.get("/profile", authMiddleware, getUserProfile);
+
 
 // Admin-only route example
 router.get("/admin-data", authMiddleware, adminOnly, (req, res) => {

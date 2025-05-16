@@ -19,14 +19,11 @@ const createCard = async (req, res) => {
 const getCardById = async (req, res) => {
   try {
     const cardId = req.params.id;
-
     // Find the card by ID
-    const newCard = await card.findById(cardId); // Ensure the model is correctly referenced as 'Card'
-
+    const newCard = await card.findById(cardId); 
     if (!newCard) {
       return res.status(404).json({ message: 'Card not found' });
     }
-
     res.status(200).json(newCard);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching card', error: error.message });
@@ -37,7 +34,12 @@ const getCardById = async (req, res) => {
 const getAllCard = async (req, res) => {
   try {
     const cards = await card.find();
-    res.status(200).json(cards);
+    const total = await card.countDocuments();
+    res.status(200).json({
+      massage : "All card is Here",
+      total,
+      cards
+    })
   } catch (error) {
     res.status(500).json({ message: 'Error fetching cards', error: error.message });
   }
@@ -47,7 +49,6 @@ const updateCard = async (req, res) => {
   try {
     const cardId = req.params.id;
     const updatedData = req.body;
-
     // Find the card by ID and update it with the new data
     const updatedCard = await card.findByIdAndUpdate(
       cardId,
@@ -68,7 +69,6 @@ const updateCard = async (req, res) => {
 const deleteCard = async (req, res) => {
   try {
     const cardId = req.params.id;
-
     const deletedCard = await card.findByIdAndDelete(cardId);
 
     if (!deletedCard) {

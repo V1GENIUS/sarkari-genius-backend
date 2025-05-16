@@ -8,7 +8,13 @@ const GovtRequestFormSchema = mongoose.Schema({
     whatsapp: { type: String,  },
     address: { type: String,},
     jobDetails: { type: String, },
-    agree: { type: Boolean, default: false } 
+    agree: { type: Boolean, default: false } ,
+    status: {
+      type: String,
+      enum: ['Request Received', 'Viewed', 'Waiting for Platform', 'Completed', 'Cancelled'],
+      default: 'Request Received',
+    },
+    
   }, {
     timestamps: true
   });

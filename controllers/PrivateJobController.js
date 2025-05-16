@@ -72,12 +72,17 @@ const getPrivateJobById = async (req, res) => {
 const getAllPrivateJobs = async (req, res) => {
   try {
     const jobs = await PrivateJobs.find();
+    const total = await PrivateJobs.countDocuments();
 
     if (!Array.isArray(jobs)) {
       return res.status(500).json({ message: 'Invalid data format received' });
     }
 
-    res.status(200).json(jobs);
+    res.status(200).json({
+      message: 'All data is here',
+      total,
+      jobs,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Errors fetching jobs', error: error.message });
   }

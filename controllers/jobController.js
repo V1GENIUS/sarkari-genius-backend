@@ -52,7 +52,14 @@ const getJobById = async (req, res) => {
 const getAllJobs = async (req, res) => {
   try {
     const jobs = await Job.find();
-    res.status(200).json(jobs);
+    const total = await Job.countDocuments();
+    
+    // res.status(200).json(jobs);
+    res.status(200).json({
+      message: 'All data is here',
+      total,
+      jobs
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching jobs', error: error.message });
   }
@@ -98,7 +105,7 @@ const deleteJob = async (req, res) => {
 
 // user Resquests API
 const submitGovtRequestForm = async (req, res) => {
-  const { name, email, mobile, whatsapp, address, jobDetails, agree } = req.body;
+  const { name, email, mobile, whatsapp, address, jobDetails, agree  } = req.body;
 
   if (!name || !email || !mobile || !whatsapp || !address || !jobDetails) {
     return res.status(400).json({ message: 'Please fill all required fields.' });
@@ -112,20 +119,23 @@ const submitGovtRequestForm = async (req, res) => {
       whatsapp,
       address,
       jobDetails,
-      agree: agree || false
+      agree: agree || false,
+      status: 'Request Received'
     });
 
     const savedRequest = await newRequest.save();
     res.status(201).json({ message: 'Form submitted successfully.', data: savedRequest });
   } catch (error) {
-    res.status(500).json({ message: 'Something went wrong. Please try again.' });
+    res.status(500).json({ message: 'Something went wrong. Please try again.' , error });
   }
 };
 const getAllGovtRequest = async (req, res) => {
   try {
     const requests = await GovtRequestForm.find();
+    const total = await GovtRequestForm.countDocuments();
     res.status(200).json({
       message: 'All data is here',
+      total,
       requests,
     });
   } catch (err) {
@@ -137,5 +147,46 @@ const getAllGovtRequest = async (req, res) => {
 };
 
 
+const deleteGovtRequest = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const deletedRequest = await GovtRequestForm.findByIdAndDelete(requestId);
 
-module.exports = { createJob, getAllJobs, deleteJob ,updateJob ,getJobById ,submitGovtRequestForm ,getAllGovtRequest};
+    if (!deletedRequest) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    res.status(200).json({ message: 'Request deleted successfully', data: deletedRequest });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting request', error: error.message });
+  }
+};
+const updateGovtRequestStatus = async (req, res) => {
+  try {
+    const requestId = req.params.id;
+    const { status } = req.body;
+
+    const validStatuses = ['Request Received', 'Viewed', 'Waiting for Platform', 'Completed', 'Cancelled'];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+
+    const updatedRequest = await GovtRequestForm.findByIdAndUpdate(
+      requestId,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedRequest) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    res.status(200).json({ message: 'Status updated successfully', data: updatedRequest });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating status', error: error.message });
+  }
+};
+
+
+module.exports = { createJob, getAllJobs, deleteJob ,updateJob ,getJobById ,submitGovtRequestForm ,getAllGovtRequest ,deleteGovtRequest ,updateGovtRequestStatus};
